@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+.data/google_credentials/
+node_modules/
+whatsapp-service/auth_info/
+.env
