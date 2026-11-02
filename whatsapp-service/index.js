@@ -1,4 +1,4 @@
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
 const qrcodePng = require('qrcode');
 const { Boom } = require('@hapi/boom');
@@ -26,7 +26,10 @@ function appendIncomingMessage(entry) {
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info');
 
+    const { version } = await fetchLatestBaileysVersion();
+
     sock = makeWASocket({
+        version,
         auth: state,
         logger: pino({ level: 'silent' }),
     });
@@ -47,7 +50,8 @@ async function start() {
                 ? lastDisconnect.error.output?.statusCode
                 : undefined;
             const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
-            console.log('Connection closed. Reconnecting:', shouldReconnect);
+            console.log('Connection closed. Status code:', statusCode, 'Reason:', lastDisconnect?.error?.message);
+            console.log('Reconnecting:', shouldReconnect);
             if (shouldReconnect) start();
         } else if (connection === 'open') {
             connected = true;
