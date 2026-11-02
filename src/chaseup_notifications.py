@@ -18,6 +18,11 @@ load_dotenv()
 
 PROJECT_NAME = "WhatsApp Chase-Up"
 
+# Always copied on every notification this module sends, on top of
+# NOTIFY_EMAIL_TO -- same convention as the Amazon A-Z project's
+# email_notifications.CC_RECIPIENTS.
+CC_RECIPIENTS = ["theekshana@gudz.com", "Raashida@gudz.com"]
+
 
 def _config() -> tuple[str, str, list[str]] | None:
     load_dotenv(override=True)
@@ -104,6 +109,10 @@ def _send(subject: str, body: str, html_body: str) -> dict:
         msg["Subject"] = subject
         msg["From"] = notify_from
         msg["To"] = ", ".join(recipients)
+        to_lower = {r.lower() for r in recipients}
+        cc = [c for c in CC_RECIPIENTS if c.lower() not in to_lower]
+        if cc:
+            msg["Cc"] = ", ".join(cc)
         msg.set_content(body)
         msg.add_alternative(html_body, subtype="html")
 
