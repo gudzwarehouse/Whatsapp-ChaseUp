@@ -46,6 +46,11 @@ def main() -> None:
     except Exception:
         errors.append(f"Reply-check step failed: {traceback.format_exc(limit=1)}")
 
+    all_errors = errors + sync_result["lookup_failed"]
+    if not (send_result["sent"] or replied_rows or send_result["exhausted"] or all_errors):
+        print("Run complete. Nothing sent, no replies, no errors -- no email.")
+        return
+
     result = notify.send_chaseup_summary_email(
         run_label=run_label,
         new_orders_added=len(sync_result["added"]),
@@ -58,7 +63,7 @@ def main() -> None:
         replied_details=[f"{r['Order ID']} ({r['Phone']})" for r in replied_rows],
         exhausted_details=send_result["exhausted"],
         no_whatsapp_details=wa_result["no_whatsapp"],
-        error_details=errors + sync_result["lookup_failed"],
+        error_details=all_errors,
     )
     print(f"Run complete. Email sent: {result['success']}" + (f" ({result['error']})" if not result["success"] else ""))
 

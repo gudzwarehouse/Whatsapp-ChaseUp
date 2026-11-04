@@ -133,3 +133,8 @@ set and are deliberately excluded from chase-up (see `track_new_active_rows.py`)
 - A handful of phone numbers in Helm's own data are malformed (extra
   digits, duplicated country code) and can't be auto-corrected; these just
   fail the WhatsApp check harmlessly.
+
+## Web UI
+
+`python src/chaseup_ui.py` then open **http://localhost:8111** -- shows the ledger and WhatsApp status, with **Fetch new orders** and **Chase up** buttons (Chase up asks for confirmation before sending).
+
