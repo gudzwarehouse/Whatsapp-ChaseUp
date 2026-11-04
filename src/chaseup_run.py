@@ -47,10 +47,6 @@ def main() -> None:
         errors.append(f"Reply-check step failed: {traceback.format_exc(limit=1)}")
 
     all_errors = errors + sync_result["lookup_failed"]
-    if not (send_result["sent"] or replied_rows or send_result["exhausted"] or all_errors):
-        print("Run complete. Nothing sent, no replies, no errors -- no email.")
-        return
-
     result = notify.send_chaseup_summary_email(
         run_label=run_label,
         new_orders_added=len(sync_result["added"]),
