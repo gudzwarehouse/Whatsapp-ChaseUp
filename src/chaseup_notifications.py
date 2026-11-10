@@ -53,10 +53,10 @@ def render_run_notification_html(
 ) -> str:
     def rows(items: list[tuple[str, object]]) -> str:
         return "".join(
-            '<tr><td style="padding:6px 10px;color:#6b7280;vertical-align:top;'
+            '<tr><td class="lbl" style="padding:6px 10px;color:#6b7280;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;'
             'border-bottom:1px solid #e5e7eb;">'
-            f'{escape(label)}</td><td style="padding:6px 10px;font-weight:600;'
-            'text-align:right;white-space:nowrap;overflow-wrap:anywhere;'
+            f'{escape(label)}</td><td class="val" style="padding:6px 10px;font-weight:600;'
+            'text-align:right;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;'
             'border-bottom:1px solid #e5e7eb;">'
             f'{escape(str(value))}</td></tr>'
             for label, value in items
@@ -74,7 +74,7 @@ def render_run_notification_html(
             'border-radius:8px;padding:10px 14px;margin-bottom:10px;">'
             f'<div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;'
             f'color:{accent};margin-bottom:4px;">{escape(heading)}</div>'
-            '<table style="width:100%;border-collapse:collapse;font-size:14px;">'
+            '<table width="100%" style="width:100%;border-collapse:collapse;font-size:14px;">'
             f'{rows(group_rows)}</table></div>'
         )
     if stage is not None or error is not None:
@@ -87,9 +87,19 @@ def render_run_notification_html(
         )
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"></head>
-<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2937;line-height:1.5;margin:0;padding:20px;background:#ffffff;">
-<div style="max-width:700px;margin:0 auto;">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {{ -webkit-text-size-adjust:100%; }}
+@media only screen and (max-width:600px) {{
+  .wrap {{ padding:12px !important; }}
+  .lbl, .val {{ display:block !important; width:100% !important; box-sizing:border-box !important;
+                text-align:left !important; border-bottom:none !important; padding:2px 0 !important; }}
+  .val {{ padding-bottom:8px !important; font-size:15px !important; }}
+  h2 {{ font-size:18px !important; }}
+}}
+</style></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1f2937;line-height:1.5;margin:0;padding:0;background:#ffffff;">
+<div class="wrap" style="max-width:700px;margin:0 auto;padding:20px;box-sizing:border-box;">
 <div style="border-bottom:2px solid #e5e7eb;padding-bottom:12px;margin-bottom:16px;">
 <h2 style="margin:0 0 6px;color:#111827;">{escape(title)}</h2>
 <div style="font-size:13px;color:#6b7280;">{metadata}</div>
